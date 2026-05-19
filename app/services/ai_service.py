@@ -60,3 +60,40 @@ def generate_portfolio(resume_data: dict) -> str:
         max_tokens=2000
     )
     return response.choices[0].message.content
+
+def match_resume_to_job(resume_data: dict, job_description: str) -> str:
+    prompt = f"""
+    You are a professional resume writer specializing in tailoring resumes to job descriptions.
+    
+    Here is the candidate's current information:
+    Name: {resume_data['full_name']}
+    Email: {resume_data['email']}
+    Phone: {resume_data.get('phone', 'Not provided')}
+    Summary: {resume_data.get('summary', 'Not provided')}
+    Education: {resume_data.get('education', 'Not provided')}
+    Experience: {resume_data.get('experience', 'Not provided')}
+    Skills: {resume_data.get('skills', 'Not provided')}
+    
+    Here is the job description they are applying for:
+    {job_description}
+    
+    Rewrite their resume to:
+    1. Match the keywords and requirements in the job description
+    2. Highlight the most relevant skills and experience
+    3. Use the same terminology as the job description
+    4. Make it ATS friendly
+    5. Keep it professional and compelling
+    
+    Write the complete tailored resume.
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "system", "content": "You are an expert resume writer who specializes in ATS optimization and job matching."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=2000
+    )
+
+    return response.choices[0].message.content

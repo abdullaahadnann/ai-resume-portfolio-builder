@@ -15,5 +15,6 @@ class Resume(Base):
     experience = Column(Text, nullable=True)
     skills = Column(Text, nullable=True)
     ai_generated_resume = Column(Text, nullable=True)
+    ai_generated_portfolio = Column(Text, nullable=True)
 
     owner = relationship("User", back_populates="resume")

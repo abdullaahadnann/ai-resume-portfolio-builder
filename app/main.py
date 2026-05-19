@@ -8,7 +8,7 @@ Base.metadata.create_all(bind=engine)
 
 security = HTTPBearer()
 
-app = FastAPI(title="AI Resume Builder")
+app = FastAPI(title="AI Resume And Portfolio Builder")
 
 app.include_router(auth.router)
 app.include_router(resume.router)

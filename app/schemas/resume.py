@@ -30,6 +30,6 @@ class ResumeResponse(BaseModel):
     experience: Optional[str] = None
     skills: Optional[str] = None
     ai_generated_resume: Optional[str] = None
-
+    ai_generated_portfolio: Optional[str] = None
     class Config:
         from_attributes = True
