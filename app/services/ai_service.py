@@ -97,3 +97,40 @@ def match_resume_to_job(resume_data: dict, job_description: str) -> str:
     )
 
     return response.choices[0].message.content
+
+def check_ats_score(resume_data: dict, job_description: str) -> dict:
+    prompt = f"""
+    You are an ATS (Applicant Tracking System) expert. Analyze the following resume against the job description and provide a score.
+
+    Resume:
+    Name: {resume_data['full_name']}
+    Summary: {resume_data.get('summary', 'Not provided')}
+    Education: {resume_data.get('education', 'Not provided')}
+    Experience: {resume_data.get('experience', 'Not provided')}
+    Skills: {resume_data.get('skills', 'Not provided')}
+
+    Job Description:
+    {job_description}
+
+    Respond in this exact JSON format with no extra text:
+    {{
+        "score": <number between 0 and 100>,
+        "matching_keywords": [<list of keywords that match>],
+        "missing_keywords": [<list of important keywords that are missing>],
+        "suggestions": [<list of specific improvements>]
+    }}
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "system", "content": "You are an ATS optimization expert. Always respond with valid JSON only, no extra text."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=1000
+    )
+
+    import json
+    result = response.choices[0].message.content
+    clean = result.replace("```json", "").replace("```", "").strip()
+    return json.loads(clean)
